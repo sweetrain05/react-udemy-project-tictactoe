@@ -2,12 +2,30 @@ import { useState } from 'react';
 
 import Player from './components/Player';
 import GameBoard from './components/GameBoard';
+import Log from './components/Log';
 
 function App() {
+    const [gameTurns, setGameTurns] = useState([]);
     const [activePlayer, setActivePlayer] = useState('X');
 
     const handleSwitchPlayer = () => {
         setActivePlayer((curr) => (curr === 'X' ? 'O' : 'X'));
+    };
+
+    const handleBoardClick = (rowIndex, colIndex) => {
+        setGameTurns((prev) => {
+            let currPlayer;
+            if (prev.length > 0 && prev[0].player === 'X') currPlayer = 'O';
+            else currPlayer = 'X';
+
+            const updatedGameTurns = [...prev];
+            updatedGameTurns.unshift({
+                square: { row: rowIndex, col: colIndex },
+                player: currPlayer,
+            });
+            console.log(updatedGameTurns);
+            return updatedGameTurns;
+        });
     };
 
     return (
@@ -26,11 +44,11 @@ function App() {
                     />
                 </ol>
                 <GameBoard
-                    activePlayerSymbol={activePlayer}
-                    handleSwitchPlayer={handleSwitchPlayer}
+                    gameTurns={gameTurns}
+                    handleBoardClick={handleBoardClick}
                 />
             </div>
-            LOG
+            <Log gameTurns={gameTurns} />
         </main>
     );
 }
